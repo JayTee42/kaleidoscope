@@ -1,0 +1,187 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Kaleidoscope
+{
+	namespace Ast
+	{
+		// A basic interface that is implemented by every AST element
+		public interface Element
+		{
+			void Accept(Visitor visitor);
+		}
+
+		// A basic interface that is implemented by those AST elements that are expressions
+		public interface Expression: Element { }
+
+		// A basic interface that is implemented by those AST elements that are top-level
+		public interface TopLevelElement: Element { }
+
+		public interface Visitor
+		{
+			void VisitLiteralExpression(LiteralExpression expr);
+			void VisitVariableExpression(VariableExpression expr);
+			void VisitBinaryOperatorExpression(BinaryOperatorExpression expr);
+			void VisitCallExpression(CallExpression expr);
+			void VisitConditionalExpression(ConditionalExpression expr);
+			void VisitFunctionPrototype(FunctionPrototype prototype);
+			void VisitFunctionDefinition(FunctionDefinition definition);
+		}
+
+		public class LiteralExpression: Expression
+		{
+			// The value of the literal
+			public double Value { get; private set; }
+
+			internal LiteralExpression(double value)
+			{
+				this.Value = value;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitLiteralExpression(this);
+			}
+		}
+
+		public class VariableExpression: Expression
+		{
+			// The name of the variable
+			public string Name { get; private set; }
+
+			internal VariableExpression(string name)
+			{
+				this.Name = name;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitVariableExpression(this);
+			}
+		}
+
+		public class BinaryOperatorExpression: Expression
+		{
+			// The left expression
+			public Expression Left { get; private set; }
+
+			// The operator between left and right expression
+			public Operator Operator { get; private set; }
+
+			// The right expression
+			public Expression Right { get; private set; }
+
+			internal BinaryOperatorExpression(Expression lhs, Operator op, Expression rhs)
+			{
+				this.Left = lhs;
+				this.Operator = op;
+				this.Right = rhs;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitBinaryOperatorExpression(this);
+			}
+		}
+
+		public class CallExpression: Expression
+		{
+			// The name of the called function
+			public string Name { get; private set; }
+
+			// The parameter list
+			public List<Expression> Parameters { get; private set; }
+
+			internal CallExpression(string name, List<Expression> parameters)
+			{
+				this.Name = name;
+				this.Parameters = parameters;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitCallExpression(this);
+			}
+		}
+
+		public class ConditionalExpression: Expression
+		{
+			// The condition
+			public Expression Condition { get; private set; }
+
+			// The "then" path
+			public Expression Then { get; private set; }
+
+			// The "else" path
+			public Expression Else { get; private set; }
+
+			internal ConditionalExpression(Expression condition, Expression thenExpr, Expression elseExpr)
+			{
+				this.Condition = condition;
+				this.Then = thenExpr;
+				this.Else = elseExpr;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitConditionalExpression(this);
+			}
+		}
+
+		public class FunctionPrototype: TopLevelElement
+		{
+			// The function name
+			public string Name { get; private set; }
+
+			// The function parameter names
+			public List<string> ParameterNames { get; private set; }
+
+			// Is this a declaration prototype?
+			public bool IsDeclaration { get; private set; }
+
+			internal FunctionPrototype(string name, List<string> parameterNames, bool isDeclaration)
+			{
+				this.Name = name;
+				this.ParameterNames = parameterNames;
+				this.IsDeclaration = isDeclaration;
+
+				// Validate that the parameter names are unique.
+				if (parameterNames.Distinct().Count() != parameterNames.Count)
+				{
+					throw new FormatException("Parameter names must be unique.");
+				}
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitFunctionPrototype(this);
+			}
+		}
+
+		public class FunctionDefinition: TopLevelElement
+		{
+			// The function prototype
+			public FunctionPrototype Prototype { get; private set; }
+
+			// The function body
+			public Expression Body { get; private set; }
+
+			internal FunctionDefinition(FunctionPrototype prototype, Expression body)
+			{
+				if (prototype.IsDeclaration)
+				{
+					throw new ArgumentException("A function definition must not have a declaration prototype.");
+				}
+
+				this.Prototype = prototype;
+				this.Body = body;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitFunctionDefinition(this);
+			}
+		}
+	}
+}
