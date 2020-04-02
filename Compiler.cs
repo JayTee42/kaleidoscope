@@ -37,7 +37,7 @@ namespace Kaleidoscope
                     case "-h":
                     case "--help":
                     {
-                        Console.WriteLine("Usage: kalc [--output-path <output path>][--stage lex | ast | ir | asm | obj | exe] [--optimize] [--target <target triple>] <input path> <output path>");
+                        Console.WriteLine("Usage: kalc [--output-path <output path>] [--stage lex | ast | ir | asm | obj | exe] [--optimize] [--target <target triple>] <input path> <output path>");
                         return false;
                     }
 
