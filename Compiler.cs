@@ -37,7 +37,7 @@ namespace Kaleidoscope
                     case "-h":
                     case "--help":
                     {
-                        Console.WriteLine("Usage: kalc [--output-path <output path>] [--stage lex | ast | ir | asm | obj | exe] [--optimize] [--target <target triple>] <input path> <output path>");
+                        Console.WriteLine("Usage: kalc [--output-path <output path>] [--stage lex | ast | ir | asm | obj | exe] [--optimize] [--target <target triple>] <input path>");
                         return false;
                     }
 
@@ -182,13 +182,13 @@ namespace Kaleidoscope
             // Create a C shim file that invokes the run function.
             var parameterNames = string.Join(",", Enumerable.Range(0, parameterCount).Select(n => $"double p{ n }"));
             var parameters = string.Join(",", Enumerable.Range(0, parameterCount).Select(n => $"p[{ n }]"));
-            var shim = $@"#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-double run({ parameterNames });
-double f(const char*a){{errno=0;char*e;double p=strtod(a,&e);if(errno||(a==e)){{printf(""Invalid argument: \""%lf\""\n"",a);exit(EXIT_FAILURE);}}return p;}}
-int main(int argc,char**argv){{if(argc!={ parameterCount + 1 }){{printf(""Invalid number of arguments ({ parameterCount } expected).\n"");exit(EXIT_FAILURE);}}
-double p[{ parameterCount + 1 }];for(int i=0;i<{ parameterCount };i++)p[i]=f(argv[1+i]);printf(""Result: %lf\n"",run({ parameters }));}}";
+            var shim = $@"#include <stdio.h>" + "\n"
+                + $@"#include <stdlib.h>" + "\n"
+                + $@"#include <errno.h>" + "\n"
+                + $@"double run({ parameterNames });" + "\n"
+                + $@"double f(const char*a){{errno=0;char*e;double p=strtod(a,&e);if(errno||(a==e)){{printf(""Invalid argument: \""%lf\""\n"",a);exit(EXIT_FAILURE);}}return p;}}" + "\n"
+                + $@"int main(int argc,char**argv){{if(argc!={ parameterCount + 1 }){{printf(""Invalid number of arguments ({ parameterCount } expected).\n"");exit(EXIT_FAILURE);}}" + "\n"
+                + $@"double p[{ parameterCount + 1 }];for(int i=0;i<{ parameterCount };i++)p[i]=f(argv[1+i]);printf(""Result: %lf\n"",run({ parameters }));}}";
 
             // Write the shim to a C file.
             var shimName = (fileName == "shim" ? "shim2" : "shim");
