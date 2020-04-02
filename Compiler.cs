@@ -186,7 +186,7 @@ namespace Kaleidoscope
                 + $@"#include <stdlib.h>" + "\n"
                 + $@"#include <errno.h>" + "\n"
                 + $@"double run({ parameterNames });" + "\n"
-                + $@"double f(const char*a){{errno=0;char*e;double p=strtod(a,&e);if(errno||(a==e)){{printf(""Invalid argument: \""%lf\""\n"",a);exit(EXIT_FAILURE);}}return p;}}" + "\n"
+                + $@"double f(const char*a){{errno=0;char*e;double p=strtod(a,&e);if(errno||(a==e)){{printf(""Invalid argument: \""%s\""\n"",a);exit(EXIT_FAILURE);}}return p;}}" + "\n"
                 + $@"int main(int argc,char**argv){{if(argc!={ parameterCount + 1 }){{printf(""Invalid number of arguments ({ parameterCount } expected).\n"");exit(EXIT_FAILURE);}}" + "\n"
                 + $@"double p[{ parameterCount + 1 }];for(int i=0;i<{ parameterCount };i++)p[i]=f(argv[1+i]);printf(""Result: %lf\n"",run({ parameters }));}}";
 
