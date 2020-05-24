@@ -158,10 +158,16 @@ namespace Kaleidoscope
 		// Read a word consisting of letters, numbers or underscores.
 		private string LexWord()
 		{
+			// Check for the end of the file.
+			if (this._char.IsEndOfFile)
+			{
+				throw new FormatException("Expected word, but found end of file.");
+			}
+
 			// Read the word while we encounter valid characters.
 			var wordBuilder = new StringBuilder();
 
-			while (!this._char.IsEndOfFile)
+			do
 			{
 				// Allow letters, digits and underscores.
 				var chr = this._char.Value;
@@ -173,7 +179,7 @@ namespace Kaleidoscope
 
 				EatChar();
 				wordBuilder.Append(chr);
-			}
+			} while (!this._char.IsEndOfFile);
 
 			return wordBuilder.ToString();
 		}
@@ -200,10 +206,16 @@ namespace Kaleidoscope
 		// This will throw an FormatException if the number is malformed.
 		private double LexNumber()
 		{
+			// Check for the end of the file.
+			if (this._char.IsEndOfFile)
+			{
+				throw new FormatException("Expected number, but found end of file.");
+			}
+
 			// Read the number while we encounter valid characters.
 			var numberBuilder = new StringBuilder();
 
-			while (!this._char.IsEndOfFile)
+			do
 			{
 				// Allow digits and dots.
 				var chr = this._char.Value;
@@ -215,7 +227,7 @@ namespace Kaleidoscope
 
 				EatChar();
 				numberBuilder.Append(chr);
-			}
+			} while (!this._char.IsEndOfFile);
 
 			var numberString = numberBuilder.ToString();
 
@@ -314,17 +326,16 @@ namespace Kaleidoscope
 			{
 				// Allow everything except newlines.
 				var chr = this._char.Value;
+				EatChar();
 
 				if ((chr == '\r') || (chr == '\n'))
 				{
 					// The newline char is consumed along with the comment.
 					// If there are multiple newline chars, the remaining ones will be consumed as leading whitespace.
-					EatChar();
 
 					break;
 				}
 
-				EatChar();
 				commentBuilder.Append(chr);
 			}
 

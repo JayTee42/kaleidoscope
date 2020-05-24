@@ -116,7 +116,7 @@ namespace Kaleidoscope.Ast
 			// Parse the inner expression.
 			var expr = ParseExpression();
 
-			// PArse the closing bracket.
+			// Parse the closing bracket.
 			if ((this._token.Type != TokenType.Bracket) || (this._token.Bracket != Bracket.RoundEnd))
 			{
 				throw new FormatException($"Expected ')' at end of bracket expression, but got '{ this._token }'.");
