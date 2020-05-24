@@ -20,7 +20,7 @@ namespace Kaleidoscope
 	}
 
 	// The allowed Kaleidoscope operators
-	public enum Operator: int
+	public enum Operator
 	{
 		Add,
 		Subtract,
