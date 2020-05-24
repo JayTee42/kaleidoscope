@@ -33,7 +33,7 @@ namespace Kaleidoscope
 		GreaterThanEqual,
 	}
 
-	// The type of a token (Identifier, Number, and Operator have payloads)
+	// The type of a token
 	public enum TokenType
 	{
 		EndOfFile,
@@ -46,7 +46,7 @@ namespace Kaleidoscope
 		Comment,
 	}
 
-	// A token as tagged union - hello Swift, Rust, and Kotlin :'(
+	// A token as tagged union - hello Swift and Rust :'(
 	public class Token
 	{
 		// The type of the token
