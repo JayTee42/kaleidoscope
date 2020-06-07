@@ -129,7 +129,28 @@ namespace Kaleidoscope.Ast
 		public void VisitFunctionPrototype(FunctionPrototype prototype)
 		{
 			var joinedParameterNames = string.Join(", ", prototype.ParameterNames.Select(p => "\"" + p + "\""));
-			this._writer.WriteLine($@"{ this.Padding }Prototype {{ name: ""{ prototype.Name }"", parameter_names: [{ joinedParameterNames }], is_declaration: { prototype.IsDeclaration } }}{ this.TrailingComma }");
+			this._writer.WriteLine($@"{ this.Padding }Prototype {{ name: ""{ prototype.Name }"", parameter_names: [{ joinedParameterNames }] }}{ this.TrailingComma }");
+		}
+
+		public void VisitFunctionDeclaration(FunctionDeclaration declaration)
+		{
+			var trailingComma = this._trailingComma;
+			this._trailingComma = false;
+
+			this._writer.WriteLine($@"{ this.Padding }FunctionDec {{");
+
+			this._depth++;
+
+			this._writer.WriteLine($@"{ this.Padding }prototype:");
+
+			this._depth++;
+			declaration.Prototype.Accept(this);
+			this._depth--;
+
+			this._depth--;
+
+			this._trailingComma = trailingComma;
+			this._writer.WriteLine($@"{ this.Padding }}}{ this.TrailingComma }");
 		}
 
 		public void VisitFunctionDefinition(FunctionDefinition definition)
@@ -137,7 +158,7 @@ namespace Kaleidoscope.Ast
 			var trailingComma = this._trailingComma;
 			this._trailingComma = false;
 
-			this._writer.WriteLine($@"{ this.Padding }Function {{");
+			this._writer.WriteLine($@"{ this.Padding }FunctionDef {{");
 
 			this._depth++;
 

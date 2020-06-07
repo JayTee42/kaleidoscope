@@ -25,7 +25,7 @@ namespace Kaleidoscope.Ast
 			// A function declaration, a function definition or the end of the file.
 			switch (this._token.Type)
 			{
-				case TokenType.Keyword when (this._token.Keyword == Keyword.Dec): return ParseFunctionPrototype();
+				case TokenType.Keyword when (this._token.Keyword == Keyword.Dec): return ParseFunctionDeclaration();
 				case TokenType.Keyword when (this._token.Keyword == Keyword.Def): return ParseFunctionDefinition();
 				case TokenType.EndOfFile: return null;
 
@@ -263,15 +263,6 @@ namespace Kaleidoscope.Ast
 		// Parse a function prototype.
 		private FunctionPrototype ParseFunctionPrototype()
 		{
-			// Parse the "dec" / "def" keyword.
-			if ((this._token.Type != TokenType.Keyword) || ((this._token.Keyword != Keyword.Dec) && (this._token.Keyword != Keyword.Def)))
-			{
-				throw new FormatException($"Expected 'dec' or 'def' at start of function prototype, but got '{ this._token }'.");
-			}
-
-			var isDeclaration = (this._token.Keyword == Keyword.Dec);
-			EatToken();
-
 			// Parse the function name.
 			if (this._token.Type != TokenType.Identifier)
 			{
@@ -330,12 +321,38 @@ namespace Kaleidoscope.Ast
 
 			EatToken();
 
-			return new FunctionPrototype(name, parameterNames, isDeclaration);
+			return new FunctionPrototype(name, parameterNames);
+		}
+
+		// Parse a function declaration.
+		private FunctionDeclaration ParseFunctionDeclaration()
+		{
+			// Parse the "dec" keyword.
+			if ((this._token.Type != TokenType.Keyword) || (this._token.Keyword != Keyword.Dec))
+			{
+				throw new FormatException($"Expected 'dec' at start of function declaration, but got '{ this._token }'.");
+			}
+
+			EatToken();
+
+			// Parse the prototype.
+			var prototype = ParseFunctionPrototype();
+
+			// Build the final declaration.
+			return new FunctionDeclaration(prototype);
 		}
 
 		// Parse a function definition.
 		private FunctionDefinition ParseFunctionDefinition()
 		{
+			// Parse the "def" keyword.
+			if ((this._token.Type != TokenType.Keyword) || (this._token.Keyword != Keyword.Def))
+			{
+				throw new FormatException($"Expected 'def' at start of function definition, but got '{ this._token }'.");
+			}
+
+			EatToken();
+
 			// Parse the prototype.
 			var prototype = ParseFunctionPrototype();
 
@@ -343,7 +360,6 @@ namespace Kaleidoscope.Ast
 			var body = ParseExpression();
 
 			// Build the final definition.
-			// This step will also validate that the prototype is not a declaration.
 			return new FunctionDefinition(prototype, body);
 		}
 	}

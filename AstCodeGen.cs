@@ -16,6 +16,9 @@ namespace Kaleidoscope.Ast
 		// The resulting LLVM value we have generated.
 		private LLVMValueRef? _result = null;
 
+		// A helper flag to tell declaration / definition prototypes apart
+		private bool _prototypeIsDefinition;
+
 		internal LLVMValueRef Result
 		{
 			get
@@ -228,7 +231,7 @@ namespace Kaleidoscope.Ast
 			{
 				// If this is a definition, the function must not have been defined before.
 				// In opposition, we allow an arbitrary number of compatible declarations before and after the definition.
-				if (!prototype.IsDeclaration && (LLVM.CountBasicBlocks(func) > 0))
+				if (this._prototypeIsDefinition && (LLVM.CountBasicBlocks(func) > 0))
 				{
 					throw new FormatException($"Redifinition of function '{ prototype.Name }' is not allowed.");
 				}
@@ -263,9 +266,18 @@ namespace Kaleidoscope.Ast
 			this.Result = func;
 		}
 
+		public void VisitFunctionDeclaration(FunctionDeclaration declaration)
+		{
+			// Generate the declaration's prototype value if not yet present.
+			// If it is already present, this is a pure validation.
+			this._prototypeIsDefinition = false;
+			declaration.Prototype.Accept(this);
+		}
+
 		public void VisitFunctionDefinition(FunctionDefinition definition)
 		{
 			// First, generate (resp. fetch) the value for the prototype.
+			this._prototypeIsDefinition = true;
 			definition.Prototype.Accept(this);
 			var func = this.Result;
 

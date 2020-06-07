@@ -26,6 +26,7 @@ namespace Kaleidoscope
 			void VisitCallExpression(CallExpression expr);
 			void VisitConditionalExpression(ConditionalExpression expr);
 			void VisitFunctionPrototype(FunctionPrototype prototype);
+			void VisitFunctionDeclaration(FunctionDeclaration declaration);
 			void VisitFunctionDefinition(FunctionDefinition definition);
 		}
 
@@ -129,7 +130,7 @@ namespace Kaleidoscope
 			}
 		}
 
-		public class FunctionPrototype: TopLevelElement
+		public class FunctionPrototype: Element
 		{
 			// The function name
 			public string Name { get; private set; }
@@ -137,14 +138,10 @@ namespace Kaleidoscope
 			// The function parameter names
 			public List<string> ParameterNames { get; private set; }
 
-			// Is this a declaration prototype?
-			public bool IsDeclaration { get; private set; }
-
-			internal FunctionPrototype(string name, List<string> parameterNames, bool isDeclaration)
+			internal FunctionPrototype(string name, List<string> parameterNames)
 			{
 				this.Name = name;
 				this.ParameterNames = parameterNames;
-				this.IsDeclaration = isDeclaration;
 
 				// Validate that the parameter names are unique.
 				if (parameterNames.Distinct().Count() != parameterNames.Count)
@@ -159,6 +156,22 @@ namespace Kaleidoscope
 			}
 		}
 
+		public class FunctionDeclaration: TopLevelElement
+		{
+			// The function prototype
+			public FunctionPrototype Prototype { get; private set; }
+
+			internal FunctionDeclaration(FunctionPrototype prototype)
+			{
+				this.Prototype = prototype;
+			}
+
+			public void Accept(Visitor visitor)
+			{
+				visitor.VisitFunctionDeclaration(this);
+			}
+		}
+
 		public class FunctionDefinition: TopLevelElement
 		{
 			// The function prototype
@@ -169,11 +182,6 @@ namespace Kaleidoscope
 
 			internal FunctionDefinition(FunctionPrototype prototype, Expression body)
 			{
-				if (prototype.IsDeclaration)
-				{
-					throw new ArgumentException("A function definition must not have a declaration prototype.");
-				}
-
 				this.Prototype = prototype;
 				this.Body = body;
 			}
