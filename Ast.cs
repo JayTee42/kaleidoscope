@@ -21,7 +21,7 @@ namespace Kaleidoscope
 		public interface Visitor
 		{
 			void VisitLiteralExpression(LiteralExpression expr);
-			void VisitVariableExpression(VariableExpression expr);
+			void VisitParameterExpression(ParameterExpression expr);
 			void VisitBinaryOperatorExpression(BinaryOperatorExpression expr);
 			void VisitCallExpression(CallExpression expr);
 			void VisitConditionalExpression(ConditionalExpression expr);
@@ -45,19 +45,19 @@ namespace Kaleidoscope
 			}
 		}
 
-		public class VariableExpression: Expression
+		public class ParameterExpression: Expression
 		{
-			// The name of the variable
+			// The name of the parameter
 			public string Name { get; private set; }
 
-			internal VariableExpression(string name)
+			internal ParameterExpression(string name)
 			{
 				this.Name = name;
 			}
 
 			public void Accept(Visitor visitor)
 			{
-				visitor.VisitVariableExpression(this);
+				visitor.VisitParameterExpression(this);
 			}
 		}
 

@@ -127,22 +127,22 @@ namespace Kaleidoscope.Ast
 			return expr;
 		}
 
-		// Parse an identifier expression (variable or function call).
+		// Parse an identifier expression (parameter or function call).
 		private Expression ParseIdentifierExpression()
 		{
 			// Parse the identifier.
 			if (this._token.Type != TokenType.Identifier)
 			{
-				throw new FormatException($"Expected variable identifier or function call, but got '{ this._token }'.");
+				throw new FormatException($"Expected parameter identifier or function call, but got '{ this._token }'.");
 			}
 
 			var name = this._token.Identifier;
 			EatToken();
 
-			// If the next token is an opening round bracket, we only have a variable expression.
+			// If the next token is an opening round bracket, we only have a parameter expression.
 			if ((this._token.Type != TokenType.Bracket) || (this._token.Bracket != Bracket.RoundStart))
 			{
-				return new VariableExpression(name);
+				return new ParameterExpression(name);
 			}
 
 			EatToken();

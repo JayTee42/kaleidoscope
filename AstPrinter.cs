@@ -32,9 +32,9 @@ namespace Kaleidoscope.Ast
 			this._writer.WriteLine($@"{ this.Padding }Literal {{ value: ""{ expr.Value }"" }}{ this.TrailingComma }");
 		}
 
-		public void VisitVariableExpression(VariableExpression expr)
+		public void VisitParameterExpression(ParameterExpression expr)
 		{
-			this._writer.WriteLine($@"{ this.Padding }Variable {{ name: ""{ expr.Name }"" }}{ this.TrailingComma }");
+			this._writer.WriteLine($@"{ this.Padding }Parameter {{ name: ""{ expr.Name }"" }}{ this.TrailingComma }");
 		}
 
 		public void VisitBinaryOperatorExpression(BinaryOperatorExpression expr)

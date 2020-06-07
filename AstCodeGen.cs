@@ -45,9 +45,9 @@ namespace Kaleidoscope.Ast
 			this.Result = LLVM.ConstReal(LLVM.DoubleType(), expr.Value);
 		}
 
-		public void VisitVariableExpression(VariableExpression expr)
+		public void VisitParameterExpression(ParameterExpression expr)
 		{
-			// Perform a lookup for the variable value.
+			// Perform a lookup for the parameter value.
 			if (!this._namedValues.TryGetValue(expr.Name, out var val))
 			{
 				throw new FormatException($"Invalid identifier: '{ expr.Name }'");
