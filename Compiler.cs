@@ -238,7 +238,7 @@ namespace Kaleidoscope
                     // Wrap the lexer into a parser.
                     var parser = new Parser(lexer);
 
-                    // If we only want the lexing stage, lex into the output file.
+                    // If we only want the parser stage, parse into the output file.
                     if (stage == Stage.Parser)
                     {
                         Compiler.ParseToOutputFile(parser, fileName, outputPath);
