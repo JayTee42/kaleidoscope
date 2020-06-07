@@ -139,7 +139,7 @@ namespace Kaleidoscope.Ast
 			var name = this._token.Identifier;
 			EatToken();
 
-			// If the next token is an opening round bracket, we only have a parameter expression.
+			// If the next token is not an opening round bracket, we only have a parameter expression.
 			if ((this._token.Type != TokenType.Bracket) || (this._token.Bracket != Bracket.RoundStart))
 			{
 				return new ParameterExpression(name);
