@@ -232,7 +232,7 @@ namespace Kaleidoscope
 			var numberString = numberBuilder.ToString();
 
 			// Try to parse the number as double.
-			var numberStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
+			var numberStyle = NumberStyles.AllowDecimalPoint;
 
 			if (!double.TryParse(numberString, numberStyle, NumberFormatInfo.InvariantInfo, out var number))
 			{

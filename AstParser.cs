@@ -83,7 +83,7 @@ namespace Kaleidoscope.Ast
 				case TokenType.Identifier: return ParseIdentifierExpression();
 				case TokenType.Keyword when (this._token.Keyword == Keyword.If): return ParseConditionalExpression();
 
-				default: throw new FormatException($"Expected primary expression, but got { this._token }.");
+				default: throw new FormatException($"Expected primary expression, but got '{ this._token }'.");
 			}
 		}
 
@@ -325,7 +325,7 @@ namespace Kaleidoscope.Ast
 		}
 
 		// Parse a function declaration.
-		private FunctionDeclaration ParseFunctionDeclaration()
+		private TopLevelElement ParseFunctionDeclaration()
 		{
 			// Parse the "dec" keyword.
 			if ((this._token.Type != TokenType.Keyword) || (this._token.Keyword != Keyword.Dec))
@@ -343,7 +343,7 @@ namespace Kaleidoscope.Ast
 		}
 
 		// Parse a function definition.
-		private FunctionDefinition ParseFunctionDefinition()
+		private TopLevelElement ParseFunctionDefinition()
 		{
 			// Parse the "def" keyword.
 			if ((this._token.Type != TokenType.Keyword) || (this._token.Keyword != Keyword.Def))

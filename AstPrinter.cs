@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -29,7 +30,7 @@ namespace Kaleidoscope.Ast
 
 		public void VisitLiteralExpression(LiteralExpression expr)
 		{
-			this._writer.WriteLine($@"{ this.Padding }Literal {{ value: ""{ expr.Value }"" }}{ this.TrailingComma }");
+			this._writer.WriteLine($@"{ this.Padding }Literal {{ value: ""{ expr.Value.ToString(CultureInfo.InvariantCulture) }"" }}{ this.TrailingComma }");
 		}
 
 		public void VisitParameterExpression(ParameterExpression expr)

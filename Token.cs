@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Kaleidoscope
 {
@@ -213,7 +214,7 @@ namespace Kaleidoscope
 				case TokenType.Keyword: return $"Keyword({ this._kw })";
 				case TokenType.Bracket: return $"Bracket({ this._br })";
 				case TokenType.Identifier: return $@"Identifier(""{ this._str }"")";
-				case TokenType.Number: return $"Number({ this._dbl })";
+				case TokenType.Number: return $"Number({ this._dbl.ToString(CultureInfo.InvariantCulture) })";
 				case TokenType.Operator: return $"Operator({ this._op })";
 				case TokenType.ParameterSeparator: return "ParameterSeparator";
 				case TokenType.Comment: return $@"Comment(""{ this._str }"")";
