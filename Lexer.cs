@@ -51,9 +51,6 @@ namespace Kaleidoscope
 		// The current character
 		private Character _char;
 
-		// Did we already return the EndOfFile token?
-		private bool _hasReturnedEndOfFile = false;
-
 		// Create a new lexer that wraps the given text reader.
 		public Lexer(TextReader reader)
 		{
@@ -64,12 +61,6 @@ namespace Kaleidoscope
 		// Return the next token of the input.
 		public Token Lex()
 		{
-			// It is an error to call this method if we have already returned EndOfFile.
-			if (this._hasReturnedEndOfFile)
-			{
-				throw new InvalidOperationException("EndOfFile has already been returned.");
-			}
-
 			// Skip whitespaces.
 			while (!this._char.IsEndOfFile && char.IsWhiteSpace(this._char.Value))
 			{
@@ -79,7 +70,6 @@ namespace Kaleidoscope
 			// Check for the end of the file.
 			if (this._char.IsEndOfFile)
 			{
-				this._hasReturnedEndOfFile = true;
 				return Token.NewEndOfFile();
 			}
 
