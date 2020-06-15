@@ -223,15 +223,10 @@ namespace Kaleidoscope.Ast
 		// Cut at the first binary operator whose precedence is below "min_precedence".
 		private Expression ExtendPrimaryExpression(Expression lhs, int min_precedence)
 		{
-			while (true)
+			// If the lookahead token is not an operator, we are done and return the accumulated expression.
+			// In the first run, that's simply the primary expression parameter.
+			while (this._token.Type == TokenType.Operator)
 			{
-				// If the token is not an operator, we are done and return the accumulated expression.
-				// In the first run, that's simply the primary expression parameter.
-				if (this._token.Type != TokenType.Operator)
-				{
-					return lhs;
-				}
-
 				// Get the operator and its precedence.
 				var op = this._token.Operator;
 				var precedence = Parser.GetOperatorPrecedence(op);
@@ -240,7 +235,7 @@ namespace Kaleidoscope.Ast
 				// we perform a cut and return the accumulated expression.
 				if (precedence < min_precedence)
 				{
-					return lhs;
+					break;
 				}
 
 				// The operator is strong enough.
@@ -258,6 +253,8 @@ namespace Kaleidoscope.Ast
 				// Merge the LHS and RHS into a binary operator expression and make it the new LHS.
 				lhs = new BinaryOperatorExpression(lhs, op, rhs);
 			}
+
+			return lhs;
 		}
 
 		// Parse a function prototype.
