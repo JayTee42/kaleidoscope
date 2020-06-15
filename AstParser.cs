@@ -151,6 +151,8 @@ namespace Kaleidoscope.Ast
 			var parameters = new List<Expression>();
 
 			// Check if this is the "no parameter" case as in "func()".
+			// *Important*: This condition intentionally differs from `ParseFunctionPrototype()`!
+			// The first parameter expression is allowed to start with '('.
 			if ((this._token.Type != TokenType.Bracket) || (this._token.Bracket != Bracket.RoundEnd))
 			{
 				while (true)
@@ -243,7 +245,7 @@ namespace Kaleidoscope.Ast
 				EatToken();
 				var rhs = ParsePrimaryExpression();
 
-				// Now perform a look-ahead and check the operator after the RHS.
+				// Now perform a look-ahead and check the token after the RHS.
 				// If it is also an operator that is *even* stronger, extend our new RHS to the right recursively.
 				if ((this._token.Type == TokenType.Operator) && (Parser.GetOperatorPrecedence(this._token.Operator) > precedence))
 				{
