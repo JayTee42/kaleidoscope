@@ -13,7 +13,7 @@ namespace Kaleidoscope.Ast
 		// A dictionary that maps idenfitiers to LLVM values for the current function scope
 		private Dictionary<string, LLVMValueRef> _namedValues = new Dictionary<string, LLVMValueRef>();
 
-		// The resulting LLVM value we have generated.
+		// The resulting LLVM value we have generated
 		private LLVMValueRef? _result = null;
 
 		// A helper flag to tell declaration / definition prototypes apart
@@ -27,10 +27,8 @@ namespace Kaleidoscope.Ast
 				{
 					return result;
 				}
-				else
-				{
-					throw new InvalidOperationException("No result has been generated.");
-				}
+
+				throw new InvalidOperationException("No result has been generated.");
 			}
 
 			private set => this._result = value;
@@ -269,7 +267,7 @@ namespace Kaleidoscope.Ast
 		public void VisitFunctionDeclaration(FunctionDeclaration declaration)
 		{
 			// Generate the declaration's prototype value if not yet present.
-			// If it is already present, this is a pure validation.
+			// If it is already present, this is pure validation.
 			this._prototypeIsDefinition = false;
 			declaration.Prototype.Accept(this);
 		}
@@ -298,7 +296,7 @@ namespace Kaleidoscope.Ast
 
 			// Nice, now we can create a basic block for the function (one is enough here).
 			// Then point the builder to it.
-			var block = LLVM.AppendBasicBlock(func, "entry");
+			var block = LLVM.AppendBasicBlock(func, "body");
 			LLVM.PositionBuilderAtEnd(this._module.Builder, block);
 
 			// Generate the code for the body and grab the return value.
@@ -322,22 +320,7 @@ namespace Kaleidoscope.Ast
 		}
 	}
 
-	public static class CodeGenTopLevelElementExt
-	{
-		public static LLVMValueRef Emit(this TopLevelElement topLevelElement, Module module)
-		{
-			// Create a new code generator.
-			var codeGen = new CodeGen(module);
-
-			// Visit the toplevel element.
-			topLevelElement.Accept(codeGen);
-
-			// Return the result from the code generator.
-			return codeGen.Result;
-		}
-	}
-
-	public static class CodeGenPArserExt
+	public static class CodeGenParserExt
 	{
 		public static void EmitAll(this Parser parser, Module module)
 		{

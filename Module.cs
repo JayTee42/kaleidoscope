@@ -17,7 +17,7 @@ public class Module: IDisposable
 	// The function pass manager reference (or null if optimizations are disabled)
 	private LLVMPassManagerRef? _funcPassManager;
 
-	// Avoid double-disposed.
+	// Avoid double-dispose.
 	private bool _isDisposed = false;
 
 	// The static constructor is executed once to init LLVM itself.
@@ -67,7 +67,7 @@ public class Module: IDisposable
 		this._targetMachine = LLVM.CreateTargetMachine(target, targetTriple, "generic", "", LLVMCodeGenOptLevel.LLVMCodeGenLevelDefault, LLVMRelocMode.LLVMRelocPIC, LLVMCodeModel.LLVMCodeModelDefault);
 
 		// Create a data layout from the machine and assign it to the module.
-		var dataLayout = LLVM.CreateTargetDataLayout(_targetMachine);
+		var dataLayout = LLVM.CreateTargetDataLayout(this._targetMachine);
 		LLVM.SetModuleDataLayout(this.Mod, dataLayout);
 
 		// Create the function pass manager if optimizations are enabled.
@@ -157,7 +157,7 @@ public class Module: IDisposable
 	{
 		if (LLVM.TargetMachineEmitToFile(this._targetMachine, this.Mod, Marshal.StringToHGlobalAnsi(filePath), LLVMCodeGenFileType.LLVMObjectFile, out var error))
 		{
-			throw new InvalidOperationException($"Failed to print assembly to file: { error }");
+			throw new InvalidOperationException($"Failed to print object code to file: { error }");
 		}
 	}
 }
