@@ -195,7 +195,7 @@ namespace Kaleidoscope
 
             //Write a Makefile.
             var makefile = $@"{ fileName }: { fileName }.o { shimName }.o" + "\n"
-                + "\t" + $@"gcc -lm -o { fileName } { fileName }.o { shimName }.o" + "\n\n"
+                + "\t" + $@"gcc -o { fileName } { fileName }.o { shimName }.o -lm" + "\n\n"
                 + $@"{ shimName }.o: { shimName }.c" + "\n"
                 + "\t" + $@"gcc -O3 -c -o { shimName }.o { shimName }.c" + "\n";
 
